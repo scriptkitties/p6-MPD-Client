@@ -1,0 +1,27 @@
+{
+    "perl": "6",
+    "name": "MPD::Client",
+    "version": "0.1.0",
+    "auth": "github:scriptkitties",
+    "description": "Perl 6 module for interfacing with MPD",
+    "license": "GPL-3.0",
+    "depends": [
+    ],
+    "provides": {
+    },
+    "authors": [
+        "Patrick Spek <p.spek@tyil.work>"
+    ],
+    "tags": [
+        "mpd",
+        "musicpd",
+        "mpc",
+        "musicpc",
+        "music"
+    ],
+    "test-depends": [
+        "File::Temp",
+        "Test::META"
+    ],
+    "source-url": "https://github.com/scriptkitties/p6-mpd-client.git"
+}
