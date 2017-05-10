@@ -48,6 +48,17 @@ multi sub mpd-crossfade (
 	$socket;
 }
 
+sub mpd-deltavol (
+	Int $volume,
+	IO::Socket::INET $socket
+	--> $socket;
+) is export {
+	my $current = mpd-status("volume", $socket);
+	my $new = $current + $volume;
+
+	mpd-setvol($new, $socket);
+}
+
 multi sub mpd-mixrampdb (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
@@ -105,4 +116,84 @@ multi sub mpd-random (
 	--> IO::Socket::INET
 ) is export {
 	mpd-send-toggleable("random", $state, $socket);
+}
+
+multi sub mpd-repeat (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-repeat(!mpd-status("repeat", $socket), $socket);
+}
+
+multi sub mpd-repeat (
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-send-toggleable("repeat", $state, $socket);
+}
+
+sub mpd-setvol (
+	Int $volume,
+	IO::Socket::INET $socket
+	--> $socket
+) is export {
+	if ($volume < 0) {
+		MPD::Client::Exceptions::ArgumentException.new("Volume must be positive").throw;
+	}
+
+	if ($volume > 100) {
+		MPD::Client::Exceptions::ArgumentException.new("Volume cannot exceed 100").throw;
+	}
+
+	$socket
+		==> mpd-send-raw("setvol " ~ $volume)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+multi sub mpd-single (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-single(!mpd-status("single", $socket), $socket);
+}
+
+multi sub mpd-single (
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-send-toggleable("single", $state, $socket);
+}
+
+# todo: Ensure $state is valid (off, track, album, auto)
+sub mpd-replay-gain-mode (
+	Str $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	$socket
+		==> mpd-send-raw("replay_gain_mode " ~ $state)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+sub mpd-replay-gain-status (
+	IO::Socket::INET $socket
+	--> Hash
+) is export {
+	my @strings = [
+		"replay_gain_mode",
+	];
+
+	$socket
+		==> mpd-send-raw("replay_gain_status")
+		==> mpd-response-hash()
+		==> convert-ints(@strings)
+		;
 }
