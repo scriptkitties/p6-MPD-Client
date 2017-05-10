@@ -2,7 +2,7 @@
 
 use v6.c;
 
-use MPD::Exceptions::SocketException;
+use MPD::Client::Exceptions::SocketException;
 
 unit module MPD::Client;
 

@@ -4,7 +4,7 @@ use v6.c;
 
 use MPD::Client;
 use MPD::Client::Util;
-use MPD::Exceptions::SocketException;
+use MPD::Client::Exceptions::SocketException;
 
 unit module MPD::Client::Status;
 
@@ -19,4 +19,14 @@ sub mpd-clearerror(
 		==> mpd-check-ok();
 
 	$socket;
+}
+
+# Get information on the current song.
+sub mpd-currentsong(
+	IO::Socket::INET $socket,
+	--> Hash
+) is export {
+	$socket
+		==> mpd-send-raw("currentsong")
+		==> mpd-response-hash();
 }

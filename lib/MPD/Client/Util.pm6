@@ -2,7 +2,7 @@
 
 use v6.c;
 
-use MPD::Exceptions::SocketException;
+use MPD::Client::Exceptions::SocketException;
 
 unit module MPD::Client::Util;
 
@@ -22,4 +22,22 @@ sub mpd-check-ok (
 	--> Bool
 ) is export {
 	($socket.get() eq "OK");
+}
+
+#| Turn the latest MPD response into a Hash object.
+sub mpd-response-hash (
+	IO::Socket::INET $socket
+	--> Hash
+) is export {
+	my %response;
+
+	for $socket.lines() -> $line {
+		if $line eq "OK" {
+			return %response;
+		}
+
+		if ($line ~~ m/(.+)\:\s+(.*)/) {
+			%response{$0} = $1;
+		}
+	}
 }
