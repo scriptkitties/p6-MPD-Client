@@ -130,6 +130,7 @@ multi sub mpd-status (
 		"playlistlength",
 		"song",
 		"songid",
+		"volume",
 		"updating_db",
 		"xfade",
 	];

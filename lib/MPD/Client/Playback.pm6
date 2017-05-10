@@ -51,7 +51,7 @@ multi sub mpd-crossfade (
 sub mpd-deltavol (
 	Int $volume,
 	IO::Socket::INET $socket
-	--> $socket;
+	--> IO::Socket::INET
 ) is export {
 	my $current = mpd-status("volume", $socket);
 	my $new = $current + $volume;
@@ -136,7 +136,7 @@ multi sub mpd-repeat (
 sub mpd-setvol (
 	Int $volume,
 	IO::Socket::INET $socket
-	--> $socket
+	--> IO::Socket::INET
 ) is export {
 	if ($volume < 0) {
 		MPD::Client::Exceptions::ArgumentException.new("Volume must be positive").throw;
@@ -171,19 +171,41 @@ multi sub mpd-single (
 
 # todo: Ensure $state is valid (off, track, album, auto)
 sub mpd-replay-gain-mode (
-	Str $state,
+	Str $mode,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
+	my @acceptables = <
+		album
+		auto
+		off
+		track
+	>;
+
+	my $illegal = True;
+
+	for @acceptables -> $acceptable {
+		if ($mode ne $acceptable) {
+			next;
+		}
+
+		$illegal = False;
+		last;
+	}
+
+	if ($illegal) {
+		MPD::Client::Exceptions::ArgumentException.new("Mode $mode is illegal for replay_gain_mode").throw;
+	}
+
 	$socket
-		==> mpd-send-raw("replay_gain_mode " ~ $state)
+		==> mpd-send-raw("replay_gain_mode " ~ $mode)
 		==> mpd-response-ok()
 		;
 
 	$socket;
 }
 
-sub mpd-replay-gain-status (
+multi sub mpd-replay-gain-status (
 	IO::Socket::INET $socket
 	--> Hash
 ) is export {
@@ -194,6 +216,14 @@ sub mpd-replay-gain-status (
 	$socket
 		==> mpd-send-raw("replay_gain_status")
 		==> mpd-response-hash()
-		==> convert-ints(@strings)
+		==> convert-strings(@strings)
 		;
+}
+
+multi sub mpd-replay-gain-status (
+	Str $key,
+	IO::Socket::INET $socket
+	--> Any
+) is export {
+	mpd-replay-gain-status($socket){$key};
 }
