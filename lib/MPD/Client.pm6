@@ -7,7 +7,7 @@ use MPD::Client::Exceptions::SocketException;
 unit module MPD::Client;
 
 #| Connect to a running MPD instance over TCP.
-sub mpd-connect(
+sub mpd-connect (
 	Str :$host = "127.1",
 	Int :$port = 6600
 	--> IO::Socket::INET
