@@ -33,11 +33,26 @@ sub mpd-response-hash (
 
 	for $socket.lines() -> $line {
 		if $line eq "OK" {
-			return %response;
+			last;
 		}
 
 		if ($line ~~ m/(.+)\:\s+(.*)/) {
 			%response{$0} = $1;
 		}
 	}
+
+	# transform 1/0 bools into Perl Bools
+	my @bools = [
+		"consume"
+	];
+
+	for @bools -> $bool {
+		if (!defined(%response{$bool})) {
+			next;
+		}
+
+		%response{$bool} = (%response{$bool} eq "1" ?? True !! False);
+	}
+
+	%response;
 }

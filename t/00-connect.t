@@ -12,4 +12,3 @@ use MPD::Client::Control;
 my $socket = mpd-connect(host => "localhost");
 
 isa-ok $socket, "IO::Socket::INET", "mpd-connect returns a socket";
-mpd-pause($socket);
