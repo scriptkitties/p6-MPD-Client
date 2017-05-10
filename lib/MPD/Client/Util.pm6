@@ -17,7 +17,7 @@ sub mpd-send-raw (
 }
 
 #| Check wether the latest response on the MPD socket is OK.
-sub mpd-check-ok (
+sub mpd-response-ok (
 	IO::Socket::INET $socket
 	--> Bool
 ) is export {

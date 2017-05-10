@@ -16,7 +16,7 @@ sub mpd-clearerror(
 ) is export {
 	$socket
 		==> mpd-send-raw("clearerror")
-		==> mpd-check-ok();
+		==> mpd-response-ok();
 
 	$socket;
 }

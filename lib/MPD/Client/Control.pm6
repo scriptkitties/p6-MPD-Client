@@ -17,7 +17,7 @@ sub mpd-pause(
 ) is export {
 	$socket
 		==> mpd-send-raw("pause " ~ ($state ?? "1" !! "0"))
-		==> mpd-check-ok();
+		==> mpd-response-ok();
 
 	$socket;
 }
