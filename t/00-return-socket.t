@@ -11,3 +11,4 @@ use MPD::Client;
 my $socket = mpd-connect(host => "localhost");
 
 isa-ok $socket, "IO::Socket::INET", "mpd-connect returns a socket";
+isa-ok mpd-pause($socket), "IO::Socket::INET", "mpd-pause returns a socket";
