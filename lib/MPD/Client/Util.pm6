@@ -41,7 +41,21 @@ sub mpd-response-hash (
 		}
 	}
 
-	# transform 1/0 bools into Perl Bools
+	# convert stuff to native perl stuff
+	%response
+		==> convert-bools()
+		==> convert-integers()
+		==> default-zeroes()
+		==> my %perlified-response
+		;
+
+	%perlified-response;
+}
+
+#| transform 1/0 bools into Perl Bools
+sub convert-bools (%input --> Hash)
+{
+	my %response = %input;
 	my @bools = [
 		"consume"
 	];
@@ -52,6 +66,43 @@ sub mpd-response-hash (
 		}
 
 		%response{$bool} = (%response{$bool} eq "1" ?? True !! False);
+	}
+
+	%response;
+}
+
+sub convert-integers (%input --> Hash)
+{
+	my %response = %input;
+	my @integers = [
+		"mixrampdb"
+	];
+
+	for @integers -> $integer {
+		if (!defined(%response{$integer})) {
+			next;
+		}
+
+		%response{$integer} = %response{$integer}.Int;
+	}
+
+	%response;
+}
+
+#| set default zero values if missing
+sub default-zeroes (%input --> Hash)
+{
+	my %response = %input;
+	my @zeroes = [
+		"mixrampd"
+	];
+
+	for @zeroes -> $zero {
+		if (defined(%response{$zero})) {
+			next;
+		}
+
+		%response{$zero} = 0;
 	}
 
 	%response;
