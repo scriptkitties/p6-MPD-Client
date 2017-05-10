@@ -4,7 +4,7 @@ use v6.c;
 use lib "lib";
 use Test;
 
-plan 2;
+plan 4;
 
 use MPD::Client;
 use MPD::Client::Playback;
@@ -42,4 +42,14 @@ subtest "mixrampdb" => {
 
 	mpd-mixrampdb($conn);
 	is mpd-status($conn)<mixrampdb>, 0, "Check wether mixrampdb has been removed";
+}
+
+subtest "mixrampdelay" => {
+	plan 2;
+
+	mpd-mixrampdelay($conn, 5);
+	is mpd-status($conn)<mixrampdelay>, 5, "Check wether mixrampdb is applied properly";
+
+	mpd-mixrampdelay($conn);
+	is mpd-status($conn)<mixrampdelay>, 0, "Check wether mixrampdb has been removed";
 }

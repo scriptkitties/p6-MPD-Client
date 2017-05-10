@@ -51,3 +51,16 @@ sub mpd-mixrampdb (
 
 	$socket;
 }
+
+sub mpd-mixrampdelay (
+	IO::Socket::INET $socket,
+	Int $seconds = 0
+	--> IO::Socket::INET
+) is export {
+	$socket
+		==> mpd-send-raw("mixrampdelay " ~ $seconds)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
