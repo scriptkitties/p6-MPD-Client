@@ -4,6 +4,7 @@ use v6.c;
 
 use MPD::Client;
 use MPD::Client::Util;
+use MPD::Client::Exceptions::ArgumentException;
 
 unit module MPD::Client::Playback;
 
@@ -44,6 +45,10 @@ sub mpd-mixrampdb (
 	Int $decibels = 0
 	--> IO::Socket::INET
 ) is export {
+	if ($decibels > 0) {
+		MPD::Client::Exceptions::ArgumentException.new("Decibel value must be negative").throw;
+	}
+
 	$socket
 		==> mpd-send-raw("mixrampdb " ~ $decibels)
 		==> mpd-response-ok()

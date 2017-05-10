@@ -9,6 +9,7 @@ plan 4;
 use MPD::Client;
 use MPD::Client::Playback;
 use MPD::Client::Status;
+use MPD::Client::Exceptions::ArgumentException;
 
 my $conn = mpd-connect(host => "localhost");
 
@@ -35,10 +36,12 @@ subtest "crossfade" => {
 }
 
 subtest "mixrampdb" => {
-	plan 2;
+	plan 3;
 
 	mpd-mixrampdb($conn, -17);
 	is mpd-status($conn)<mixrampdb>, -17, "Check wether mixrampdb is applied properly";
+
+	throws-like { mpd-mixrampdb($conn, 17) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException on positive decibel value";
 
 	mpd-mixrampdb($conn);
 	is mpd-status($conn)<mixrampdb>, 0, "Check wether mixrampdb has been removed";
