@@ -57,28 +57,21 @@ sub mpd-response-hash (
 		}
 	}
 
-	# Transform values into Perl types
-	%response
-		==> convert-bools()
-		==> convert-reals()
-		==> default-zeroes()
-		==> my %perlified-response
-		;
-
-	%perlified-response;
+	%response;
 }
 
 #| transform 1/0 bools into Perl Bools
-sub convert-bools (%input --> Hash)
-{
+sub convert-bools (
+	@bools,
+	%input
+	--> Hash
+) is export {
 	my %response = %input;
-	my @bools = [
-		"consume",
-		"random"
-	];
 
 	for @bools -> $bool {
 		if (!defined(%response{$bool})) {
+			%response{$bool} = False;
+
 			next;
 		}
 
@@ -88,42 +81,61 @@ sub convert-bools (%input --> Hash)
 	%response;
 }
 
-sub convert-reals (%input --> Hash)
-{
+sub convert-ints (
+	@ints,
+	%input
+	--> Hash
+) is export {
 	my %response = %input;
-	my @integers = [
-		"mixrampdb",
-		"mixrampdelay",
-		"xfade"
-	];
 
-	for @integers -> $integer {
-		if (!defined(%response{$integer})) {
+	for @ints -> $int {
+		if (!defined(%response{$int})) {
+			%response{$int} = 0;
+
 			next;
 		}
 
-		%response{$integer} = %response{$integer}.Real;
+		%response{$int} = %response{$int}.Real;
 	}
 
 	%response;
 }
 
-#| set default zero values if missing
-sub default-zeroes (%input --> Hash)
-{
+sub convert-reals (
+	@reals,
+	%input
+	--> Hash
+) is export {
 	my %response = %input;
-	my @zeroes = [
-		"mixrampd",
-		"mixrampdelay",
-		"xfade"
-	];
 
-	for @zeroes -> $zero {
-		if (defined(%response{$zero})) {
+	for @reals -> $real {
+		if (!defined(%response{$real})) {
+			%response{$real} = 0.0;
+
 			next;
 		}
 
-		%response{$zero} = 0.0;
+		%response{$real} = %response{$real}.Real;
+	}
+
+	%response;
+}
+
+sub convert-strings (
+	@strings,
+	%input
+	--> Hash
+) is export {
+	my %response = %input;
+
+	for @strings -> $string {
+		if (!defined(%response{$string})) {
+			%response{$string} = 0.0;
+
+			next;
+		}
+
+		%response{$string} = %response{$string}.Str;
 	}
 
 	%response;

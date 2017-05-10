@@ -87,10 +87,10 @@ multi sub mpd-idle (
 
 #| Reports the current status of the player and the volume level.
 #| - volume: 0-100
-#| - repeat: 0 or 1
-#| - random: 0 or 1
-#| - single: 0 or 1
-#| - consume: 0 or 1
+#| - repeat: True or False
+#| - random: True or False
+#| - single: True or False
+#| - consume: True or False
 #| - playlist: 31-bit unsigned integer, the playlist version number
 #| - playlistlength: integer, the length of the playlist
 #| - state: play, stop, or pause
@@ -115,9 +115,39 @@ multi sub mpd-status (
 	IO::Socket::INET $socket
 	--> Hash
 ) is export {
+	my @bools = [
+		"consume",
+		"random",
+		"repeat",
+		"single",
+	];
+	my @ints = [
+		"duration",
+		"mixrampdelay",
+		"nextsong",
+		"nextsongid",
+		"playlist",
+		"playlistlength",
+		"song",
+		"songid",
+		"updating_db",
+		"xfade",
+	];
+	my @reals = [
+		"mixrampdb",
+	];
+	my @strings = [
+		"error",
+		"state",
+	];
+
 	$socket
 		==> mpd-send-raw("status")
 		==> mpd-response-hash()
+		==> convert-bools(@bools)
+		==> convert-reals(@reals)
+		==> convert-ints(@ints)
+		==> convert-strings(@strings)
 		;
 }
 
@@ -147,8 +177,19 @@ sub mpd-stats (
 	IO::Socket::INET $socket
 	--> Hash
 ) is export {
+	my @ints = [
+		"artists",
+		"albums",
+		"songs",
+		"uptime",
+		"db_playtime",
+		"db_update",
+		"playtime",
+	];
+
 	$socket
 		==> mpd-send-raw("stats")
-		==> mpd-response-hash
+		==> mpd-response-hash()
+		==> convert-ints(@ints)
 		;
 }
