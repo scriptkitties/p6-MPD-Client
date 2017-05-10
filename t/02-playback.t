@@ -4,7 +4,7 @@ use v6.c;
 use lib "lib";
 use Test;
 
-plan 4;
+plan 5;
 
 use MPD::Client;
 use MPD::Client::Playback;
@@ -32,7 +32,7 @@ subtest "crossfade" => {
 	is mpd-status($conn)<xfade>, 10, "Check wether crossfade is applied properly";
 
 	mpd-crossfade($conn);
-	ok mpd-status($conn)<xfade>:!exists, "Check wether crossfade has been removed";
+	is mpd-status($conn)<xfade>, 0, "Check wether crossfade has been removed";
 }
 
 subtest "mixrampdb" => {
@@ -55,4 +55,17 @@ subtest "mixrampdelay" => {
 
 	mpd-mixrampdelay($conn);
 	is mpd-status($conn)<mixrampdelay>, 0, "Check wether mixrampdb has been removed";
+}
+
+subtest "random" => {
+	plan 3;
+
+	mpd-random($conn, True);
+	is mpd-status($conn)<random>, True, "Random state is set";
+
+	mpd-random($conn, False);
+	is mpd-status($conn)<random>, False, "Random state is not set";
+
+	mpd-random($conn);
+	is mpd-status($conn)<random>, True, "Random state has been toggled";
 }

@@ -57,7 +57,8 @@ sub convert-bools (%input --> Hash)
 {
 	my %response = %input;
 	my @bools = [
-		"consume"
+		"consume",
+		"random"
 	];
 
 	for @bools -> $bool {

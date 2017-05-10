@@ -3,6 +3,7 @@
 use v6.c;
 
 use MPD::Client;
+use MPD::Client::Status;
 use MPD::Client::Util;
 use MPD::Client::Exceptions::ArgumentException;
 
@@ -64,6 +65,27 @@ sub mpd-mixrampdelay (
 ) is export {
 	$socket
 		==> mpd-send-raw("mixrampdelay " ~ $seconds)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+sub mpd-random (
+	IO::Socket::INET $socket,
+	Bool $state?
+	--> IO::Socket::INET
+) is export {
+	my $value = $state;
+
+	if (!defined($value)) {
+		$value = !mpd-status($socket)<random>;
+	}
+
+	my $message ~= "random " ~ ($value ?? "1" !! "0");
+
+	$socket
+		==> mpd-send-raw($message)
 		==> mpd-response-ok()
 		;
 
