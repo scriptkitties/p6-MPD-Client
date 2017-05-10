@@ -44,7 +44,7 @@ sub mpd-response-hash (
 	# Transform values into Perl types
 	%response
 		==> convert-bools()
-		==> convert-integers()
+		==> convert-reals()
 		==> default-zeroes()
 		==> my %perlified-response
 		;
@@ -72,7 +72,7 @@ sub convert-bools (%input --> Hash)
 	%response;
 }
 
-sub convert-integers (%input --> Hash)
+sub convert-reals (%input --> Hash)
 {
 	my %response = %input;
 	my @integers = [
@@ -86,7 +86,7 @@ sub convert-integers (%input --> Hash)
 			next;
 		}
 
-		%response{$integer} = %response{$integer}.Int;
+		%response{$integer} = %response{$integer}.Real;
 	}
 
 	%response;
@@ -107,7 +107,7 @@ sub default-zeroes (%input --> Hash)
 			next;
 		}
 
-		%response{$zero} = 0;
+		%response{$zero} = 0.0;
 	}
 
 	%response;

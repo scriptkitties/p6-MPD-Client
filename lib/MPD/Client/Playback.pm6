@@ -43,7 +43,7 @@ sub mpd-crossfade (
 
 sub mpd-mixrampdb (
 	IO::Socket::INET $socket,
-	Int $decibels = 0
+	Real $decibels = 0
 	--> IO::Socket::INET
 ) is export {
 	if ($decibels > 0) {

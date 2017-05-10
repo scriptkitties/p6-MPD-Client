@@ -36,10 +36,13 @@ subtest "crossfade" => {
 }
 
 subtest "mixrampdb" => {
-	plan 3;
+	plan 4;
 
 	mpd-mixrampdb($conn, -17);
 	is mpd-status($conn)<mixrampdb>, -17, "Check wether mixrampdb is applied properly";
+
+	mpd-mixrampdb($conn, -17.7);
+	is-approx mpd-status($conn)<mixrampdb>, -17.7, "Check wether mixrampdb is applied properly with a Rat";
 
 	throws-like { mpd-mixrampdb($conn, 17) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException on positive decibel value";
 
