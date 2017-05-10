@@ -175,26 +175,15 @@ sub mpd-replay-gain-mode (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my @acceptables = <
+	my $acceptables = set <
 		album
 		auto
 		off
 		track
 	>;
 
-	my $illegal = True;
-
-	for @acceptables -> $acceptable {
-		if ($mode ne $acceptable) {
-			next;
-		}
-
-		$illegal = False;
-		last;
-	}
-
-	if ($illegal) {
-		MPD::Client::Exceptions::ArgumentException.new("Mode $mode is illegal for replay_gain_mode").throw;
+	if (!$acceptables{$mode}) {
+		MPD::Client::Exceptions::ArgumentException.new("Mode '$mode' is illegal for replay_gain_mode").throw;
 	}
 
 	$socket
