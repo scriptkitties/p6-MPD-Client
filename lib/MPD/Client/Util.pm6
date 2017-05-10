@@ -41,7 +41,7 @@ sub mpd-response-hash (
 		}
 	}
 
-	# convert stuff to native perl stuff
+	# Transform values into Perl types
 	%response
 		==> convert-bools()
 		==> convert-integers()
