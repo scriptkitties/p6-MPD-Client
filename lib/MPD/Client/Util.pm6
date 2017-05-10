@@ -76,7 +76,8 @@ sub convert-integers (%input --> Hash)
 	my %response = %input;
 	my @integers = [
 		"mixrampdb",
-		"mixrampdelay"
+		"mixrampdelay",
+		"xfade"
 	];
 
 	for @integers -> $integer {
@@ -96,7 +97,8 @@ sub default-zeroes (%input --> Hash)
 	my %response = %input;
 	my @zeroes = [
 		"mixrampd",
-		"mixrampdelay"
+		"mixrampdelay",
+		"xfade"
 	];
 
 	for @zeroes -> $zero {
