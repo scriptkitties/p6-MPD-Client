@@ -33,3 +33,13 @@ subtest "crossfade" => {
 	mpd-crossfade($conn);
 	ok mpd-status($conn)<xfade>:!exists, "Check wether crossfade has been removed";
 }
+
+subtest "mixrampdb" => {
+	plan 2;
+
+	mpd-mixrampdb($conn, -17);
+	is mpd-status($conn)<mixrampdb>, -17, "Check wether mixrampdb is applied properly";
+
+	mpd-mixrampdb($conn);
+	is mpd-status($conn)<mixrampdb>, 0, "Check wether mixrampdb has been removed";
+}
