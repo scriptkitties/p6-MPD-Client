@@ -27,22 +27,3 @@ sub mpd-connect(
 
 	$socket;
 }
-
-#| Set the pause state on MPD. The MPD protocol has deprecated the use of
-#| `pause` without arguments. When state is set to True, the pause state will
-#| be set, which is the default.
-sub mpd-pause(
-	IO::Socket::INET $socket,
-	Bool $state = True
-	--> IO::Socket::INET
-) is export {
-	$socket.put("pause " ~ ($state ?? "1" !! "0"));
-
-	my $response = $socket.get();
-
-	if ($response ne "OK") {
-		MPD::Exceptions::SocketException.new("Non-OK response: " ~ $response).throw();
-	}
-
-	$socket;
-}

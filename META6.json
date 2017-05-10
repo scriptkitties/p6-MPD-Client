@@ -9,7 +9,8 @@
     ],
     "provides": {
         "MPD::Client": "lib/MPD/Client.pm6",
-        "MPD::Client::Exceptions": "lib/MPD/Client/Exceptions/SocketException.pm6"
+        "MPD::Client::Exceptions": "lib/MPD/Client/Exceptions/SocketException.pm6",
+        "MPD::Client::Util": "lib/MPD/Client/Util.pm6",
     },
     "authors": [
         "Patrick Spek <p.spek@tyil.work>"
