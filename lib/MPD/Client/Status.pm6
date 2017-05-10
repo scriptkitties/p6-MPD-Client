@@ -104,7 +104,7 @@ sub mpd-idle (
 #|   explanation.
 #| - updating_db: job id
 #| - error: if there is an error, returns message here
-sub mpd-status (
+multi sub mpd-status (
 	IO::Socket::INET $socket
 	--> Hash
 ) is export {
@@ -112,6 +112,20 @@ sub mpd-status (
 		==> mpd-send-raw("status")
 		==> mpd-response-hash()
 		;
+}
+
+multi sub mpd-status (
+	Str $setting,
+	IO::Socket::INET $socket
+	--> Any
+) is export {
+	my %response = mpd-status($socket);
+
+	if (!defined(%response{$setting})) {
+		return Nil;
+	}
+
+	%response{$setting};
 }
 
 #| Displays statistics.

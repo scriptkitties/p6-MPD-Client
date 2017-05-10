@@ -16,6 +16,22 @@ sub mpd-send-raw (
 	$socket;
 }
 
+sub mpd-send-toggleable (
+	Str $option,
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	my $message = $option ~ " " ~ ($state ?? "1" !! "0");
+
+	$socket
+		==> mpd-send-raw($message)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
 #| Check wether the latest response on the MPD socket is OK.
 sub mpd-response-ok (
 	IO::Socket::INET $socket

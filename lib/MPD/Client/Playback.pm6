@@ -14,18 +14,9 @@ sub mpd-consume (
 	Bool $state?
 	--> IO::Socket::INET
 ) is export {
-	my $message = "consume";
+	my $current = mpd-status("consume", $socket);
 
-	if (defined($state)) {
-		$message ~= " " ~ ($state ?? "1" !! "0");
-	}
-
-	$socket
-		==> mpd-send-raw($message)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send-toggleable("consume", $state // !$current, $socket);
 }
 
 sub mpd-crossfade (
@@ -76,18 +67,7 @@ sub mpd-random (
 	Bool $state?
 	--> IO::Socket::INET
 ) is export {
-	my $value = $state;
+	my $current = mpd-status("random", $socket);
 
-	if (!defined($value)) {
-		$value = !mpd-status($socket)<random>;
-	}
-
-	my $message ~= "random " ~ ($value ?? "1" !! "0");
-
-	$socket
-		==> mpd-send-raw($message)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send-toggleable("random", $state // !$current, $socket);
 }
