@@ -9,7 +9,9 @@
     ],
     "provides": {
         "MPD::Client": "lib/MPD/Client.pm6",
-        "MPD::Client::Exceptions": "lib/MPD/Client/Exceptions/SocketException.pm6",
+        "MPD::Client::Exceptions::SocketException": "lib/MPD/Client/Exceptions/SocketException.pm6",
+        "MPD::Client::Control": "lib/MPD/Client/Control.pm6",
+        "MPD::Client::Status": "lib/MPD/Client/Status.pm6",
         "MPD::Client::Util": "lib/MPD/Client/Util.pm6",
     },
     "authors": [
