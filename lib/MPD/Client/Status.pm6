@@ -61,9 +61,16 @@ sub mpd-currentsong (
 #|
 #| If the optional SUBSYSTEMS argument is used, MPD will only send notifications
 #| when something changed in one of the specified subsytems.
-sub mpd-idle (
-	IO::Socket::INET $socket,
-	Str $subsystems? = ""
+multi sub mpd-idle (
+	IO::Socket::INET $socket
+	--> Hash
+) is export {
+	mpd-idle("", $socket);
+}
+
+multi sub mpd-idle (
+	Str $subsystems,
+	IO::Socket::INET $socket
 	--> Hash
 ) is export {
 	my $message = "idle";

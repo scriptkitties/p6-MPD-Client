@@ -16,10 +16,10 @@ my $conn = mpd-connect(host => "localhost");
 subtest "consume" => {
 	plan 2;
 
-	mpd-consume($conn, True);
+	mpd-consume(True, $conn);
 	is mpd-status($conn)<consume>, True, "Consume state is set";
 
-	mpd-consume($conn, False);
+	mpd-consume(False, $conn);
 	is mpd-status($conn)<consume>, False, "Consume state is not set";
 }
 
@@ -28,7 +28,7 @@ subtest "crossfade" => {
 
 	isa-ok mpd-crossfade($conn), "IO::Socket::INET", "crossfade returns the socket";
 
-	mpd-crossfade($conn, 10);
+	mpd-crossfade(10, $conn);
 	is mpd-status($conn)<xfade>, 10, "Check wether crossfade is applied properly";
 
 	mpd-crossfade($conn);
@@ -38,13 +38,13 @@ subtest "crossfade" => {
 subtest "mixrampdb" => {
 	plan 4;
 
-	mpd-mixrampdb($conn, -17);
+	mpd-mixrampdb(-17, $conn);
 	is mpd-status($conn)<mixrampdb>, -17, "Check wether mixrampdb is applied properly";
 
-	mpd-mixrampdb($conn, -17.7);
+	mpd-mixrampdb(-17.7, $conn);
 	is-approx mpd-status($conn)<mixrampdb>, -17.7, "Check wether mixrampdb is applied properly with a Rat";
 
-	throws-like { mpd-mixrampdb($conn, 17) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException on positive decibel value";
+	throws-like { mpd-mixrampdb(17, $conn) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException on positive decibel value";
 
 	mpd-mixrampdb($conn);
 	is mpd-status($conn)<mixrampdb>, 0, "Check wether mixrampdb has been removed";
@@ -53,7 +53,7 @@ subtest "mixrampdb" => {
 subtest "mixrampdelay" => {
 	plan 2;
 
-	mpd-mixrampdelay($conn, 5);
+	mpd-mixrampdelay(5, $conn);
 	is mpd-status($conn)<mixrampdelay>, 5, "Check wether mixrampdb is applied properly";
 
 	mpd-mixrampdelay($conn);
@@ -63,12 +63,12 @@ subtest "mixrampdelay" => {
 subtest "random" => {
 	plan 3;
 
-	mpd-random($conn, True);
-	is mpd-status($conn)<random>, True, "Random state is set";
+	mpd-random(True, $conn);
+	is mpd-status("random", $conn), True, "Random state is set";
 
-	mpd-random($conn, False);
-	is mpd-status($conn)<random>, False, "Random state is not set";
+	mpd-random(False, $conn);
+	is mpd-status("random", $conn), False, "Random state is not set";
 
 	mpd-random($conn);
-	is mpd-status($conn)<random>, True, "Random state has been toggled";
+	is mpd-status("random", $conn), True, "Random state has been toggled";
 }

@@ -2,26 +2,42 @@
 
 use v6.c;
 
-use MPD::Client;
 use MPD::Client::Status;
 use MPD::Client::Util;
 use MPD::Client::Exceptions::ArgumentException;
 
 unit module MPD::Client::Playback;
 
-sub mpd-consume (
-	IO::Socket::INET $socket,
-	Bool $state?
+multi sub mpd-consume (
+	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my $current = mpd-status("consume", $socket);
-
-	mpd-send-toggleable("consume", $state // !$current, $socket);
+	mpd-consume(!mpd-status("consume", $socket), $socket);
 }
 
-sub mpd-crossfade (
-	IO::Socket::INET $socket,
-	Int $seconds = 0
+multi sub mpd-consume (
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	$socket
+		==> mpd-send-raw("consume " ~ ($state ?? "1" !! "0"))
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+multi sub mpd-crossfade (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-crossfade(0, $socket);
+}
+
+multi sub mpd-crossfade (
+	Int $seconds,
+	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
 	$socket
@@ -32,9 +48,16 @@ sub mpd-crossfade (
 	$socket;
 }
 
-sub mpd-mixrampdb (
-	IO::Socket::INET $socket,
-	Real $decibels = 0
+multi sub mpd-mixrampdb (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-mixrampdb(0, $socket);
+}
+
+multi sub mpd-mixrampdb (
+	Real $decibels,
+	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
 	if ($decibels > 0) {
@@ -49,9 +72,16 @@ sub mpd-mixrampdb (
 	$socket;
 }
 
-sub mpd-mixrampdelay (
-	IO::Socket::INET $socket,
-	Int $seconds = 0
+multi sub mpd-mixrampdelay (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-mixrampdelay(0, $socket);
+}
+
+multi sub mpd-mixrampdelay (
+	Int $seconds,
+	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
 	$socket
@@ -62,12 +92,17 @@ sub mpd-mixrampdelay (
 	$socket;
 }
 
-sub mpd-random (
-	IO::Socket::INET $socket,
-	Bool $state?
+multi sub mpd-random (
+	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my $current = mpd-status("random", $socket);
+	mpd-random(!mpd-status("random", $socket), $socket);
+}
 
-	mpd-send-toggleable("random", $state // !$current, $socket);
+multi sub mpd-random (
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-send-toggleable("random", $state, $socket);
 }
