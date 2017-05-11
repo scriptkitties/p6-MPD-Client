@@ -35,7 +35,7 @@ sub mpd-response-hash (
 }
 
 #| Send a boolean value $state for the given $option to the MPD $socket.
-sub mpd-send-bool (
+multi sub mpd-send (
 	Str $option,
 	Bool $state,
 	IO::Socket::INET $socket
@@ -44,7 +44,23 @@ sub mpd-send-bool (
 	my $message = $option ~ " " ~ ($state ?? "1" !! "0");
 
 	$socket
-		==> mpd-send-raw($message)
+		==> mpd-send($message)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+multi sub mpd-send (
+	Str $option,
+	Str $value,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	my $message = $option ~ " " ~ $value;
+
+	$socket
+		==> mpd-send($message)
 		==> mpd-response-ok()
 		;
 
@@ -52,12 +68,13 @@ sub mpd-send-bool (
 }
 
 #| Send a raw command to the MPD socket.
-sub mpd-send-raw (
+multi sub mpd-send (
 	Str $message,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
 	$socket.put($message);
+
 	$socket;
 }
 

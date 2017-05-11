@@ -14,7 +14,7 @@ sub mpd-clearerror (
 	--> IO::Socket::INET
 ) is export {
 	$socket
-		==> mpd-send-raw("clearerror")
+		==> mpd-send("clearerror")
 		==> mpd-response-ok()
 		;
 
@@ -28,7 +28,7 @@ sub mpd-currentsong (
 	--> Hash
 ) is export {
 	$socket
-		==> mpd-send-raw("currentsong")
+		==> mpd-send("currentsong")
 		==> mpd-response-hash()
 		;
 }
@@ -80,7 +80,7 @@ multi sub mpd-idle (
 	}
 
 	$socket
-		==> mpd-send-raw($message)
+		==> mpd-send($message)
 		==> mpd-response-hash()
 		;
 }
@@ -143,7 +143,7 @@ multi sub mpd-status (
 	];
 
 	$socket
-		==> mpd-send-raw("status")
+		==> mpd-send("status")
 		==> mpd-response-hash()
 		==> transform-response-bools(@bools)
 		==> transform-response-reals(@reals)
@@ -189,7 +189,7 @@ sub mpd-stats (
 	];
 
 	$socket
-		==> mpd-send-raw("stats")
+		==> mpd-send("stats")
 		==> mpd-response-hash()
 		==> transform-response-ints(@ints)
 		;

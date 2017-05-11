@@ -25,7 +25,7 @@ multi sub mpd-consume (
 	--> IO::Socket::INET
 ) is export {
 	$socket
-		==> mpd-send-raw("consume " ~ ($state ?? "1" !! "0"))
+		==> mpd-send("consume " ~ ($state ?? "1" !! "0"))
 		==> mpd-response-ok()
 		;
 
@@ -47,7 +47,7 @@ multi sub mpd-crossfade (
 	--> IO::Socket::INET
 ) is export {
 	$socket
-		==> mpd-send-raw("crossfade " ~ $seconds)
+		==> mpd-send("crossfade " ~ $seconds)
 		==> mpd-response-ok()
 		;
 
@@ -81,7 +81,7 @@ multi sub mpd-mixrampdb (
 	}
 
 	$socket
-		==> mpd-send-raw("mixrampdb " ~ $decibels)
+		==> mpd-send("mixrampdb " ~ $decibels)
 		==> mpd-response-ok()
 		;
 
@@ -103,7 +103,7 @@ multi sub mpd-mixrampdelay (
 	--> IO::Socket::INET
 ) is export {
 	$socket
-		==> mpd-send-raw("mixrampdelay " ~ $seconds)
+		==> mpd-send("mixrampdelay " ~ $seconds)
 		==> mpd-response-ok()
 		;
 
@@ -124,7 +124,7 @@ multi sub mpd-random (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-bool("random", $state, $socket);
+	mpd-send("random", $state, $socket);
 }
 
 #| Toggle the repeat state.
@@ -141,7 +141,7 @@ multi sub mpd-repeat (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-bool("repeat", $state, $socket);
+	mpd-send("repeat", $state, $socket);
 }
 
 #| Sets volume to $volume, the range of volume is 0-100. If you want to change
@@ -160,7 +160,7 @@ sub mpd-setvol (
 	}
 
 	$socket
-		==> mpd-send-raw("setvol " ~ $volume)
+		==> mpd-send("setvol " ~ $volume)
 		==> mpd-response-ok()
 		;
 
@@ -184,7 +184,7 @@ multi sub mpd-single (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-bool("single", $state, $socket);
+	mpd-send("single", $state, $socket);
 }
 
 #| Sets the replay gain mode. One of "off", "track", "album", "auto". Changing
@@ -208,7 +208,7 @@ sub mpd-replay-gain-mode (
 	}
 
 	$socket
-		==> mpd-send-raw("replay_gain_mode " ~ $mode)
+		==> mpd-send("replay_gain_mode " ~ $mode)
 		==> mpd-response-ok()
 		;
 
@@ -226,7 +226,7 @@ multi sub mpd-replay-gain-status (
 	];
 
 	$socket
-		==> mpd-send-raw("replay_gain_status")
+		==> mpd-send("replay_gain_status")
 		==> mpd-response-hash()
 		==> transform-response-strings(@strings)
 		;
