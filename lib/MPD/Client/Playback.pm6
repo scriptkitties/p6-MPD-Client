@@ -124,7 +124,7 @@ multi sub mpd-random (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-toggleable("random", $state, $socket);
+	mpd-send-bool("random", $state, $socket);
 }
 
 #| Toggle the repeat state.
@@ -141,7 +141,7 @@ multi sub mpd-repeat (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-toggleable("repeat", $state, $socket);
+	mpd-send-bool("repeat", $state, $socket);
 }
 
 #| Sets volume to $volume, the range of volume is 0-100. If you want to change
@@ -184,7 +184,7 @@ multi sub mpd-single (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send-toggleable("single", $state, $socket);
+	mpd-send-bool("single", $state, $socket);
 }
 
 #| Sets the replay gain mode. One of "off", "track", "album", "auto". Changing

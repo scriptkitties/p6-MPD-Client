@@ -16,7 +16,7 @@ sub mpd-send-raw (
 	$socket;
 }
 
-sub mpd-send-toggleable (
+sub mpd-send-bool (
 	Str $option,
 	Bool $state,
 	IO::Socket::INET $socket
