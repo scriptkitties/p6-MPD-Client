@@ -41,26 +41,36 @@ multi sub mpd-send (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my $message = $option ~ " " ~ ($state ?? "1" !! "0");
-
-	$socket
-		==> mpd-send($message)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send($option, $state ?? "1" !! "0", $socket);
 }
 
+#| Send an array of @values for the given $option to the MPD $socket.
+multi sub mpd-send (
+	Str $option,
+	Array @values,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-send($option, @values.join(" "), $socket);
+}
+
+#| Send any $value for the given $option to the MPD $socket.
 multi sub mpd-send (
 	Str $option,
 	Any $value,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my $message = $option ~ " " ~ $value.Str;
+	mpd-send($option ~ " " ~ $value.Str, $socket);
+}
 
+multi sub mpd-send (
+	Str $message,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
 	$socket
-		==> mpd-send($message)
+		==> mpd-send-raw($message)
 		==> mpd-response-ok()
 		;
 
@@ -68,7 +78,7 @@ multi sub mpd-send (
 }
 
 #| Send a raw command to the MPD socket.
-multi sub mpd-send (
+sub mpd-send-raw (
 	Str $message,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET

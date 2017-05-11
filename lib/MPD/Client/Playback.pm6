@@ -196,7 +196,7 @@ multi sub mpd-replay-gain-status (
 	];
 
 	$socket
-		==> mpd-send("replay_gain_status")
+		==> mpd-send-raw("replay_gain_status")
 		==> mpd-response-hash()
 		==> transform-response-strings(@strings)
 		;

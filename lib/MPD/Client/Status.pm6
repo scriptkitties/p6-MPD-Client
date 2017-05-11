@@ -13,12 +13,7 @@ sub mpd-clearerror (
 	IO::Socket::INET $socket,
 	--> IO::Socket::INET
 ) is export {
-	$socket
-		==> mpd-send("clearerror")
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("clearerror", $socket);
 }
 
 #| Displays the song info of the current song (same song that is identified in
@@ -28,7 +23,7 @@ sub mpd-currentsong (
 	--> Hash
 ) is export {
 	$socket
-		==> mpd-send("currentsong")
+		==> mpd-send-raw("currentsong")
 		==> mpd-response-hash()
 		;
 }
@@ -80,7 +75,7 @@ multi sub mpd-idle (
 	}
 
 	$socket
-		==> mpd-send($message)
+		==> mpd-send-raw($message)
 		==> mpd-response-hash()
 		;
 }
@@ -143,7 +138,7 @@ multi sub mpd-status (
 	];
 
 	$socket
-		==> mpd-send("status")
+		==> mpd-send-raw("status")
 		==> mpd-response-hash()
 		==> transform-response-bools(@bools)
 		==> transform-response-reals(@reals)
@@ -189,7 +184,7 @@ sub mpd-stats (
 	];
 
 	$socket
-		==> mpd-send("stats")
+		==> mpd-send-raw("stats")
 		==> mpd-response-hash()
 		==> transform-response-ints(@ints)
 		;
