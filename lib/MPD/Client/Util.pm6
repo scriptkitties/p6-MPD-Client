@@ -53,11 +53,11 @@ multi sub mpd-send (
 
 multi sub mpd-send (
 	Str $option,
-	Str $value,
+	Any $value,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	my $message = $option ~ " " ~ $value;
+	my $message = $option ~ " " ~ $value.Str;
 
 	$socket
 		==> mpd-send($message)

@@ -24,12 +24,7 @@ multi sub mpd-consume (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	$socket
-		==> mpd-send("consume " ~ ($state ?? "1" !! "0"))
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("consume", $state, $socket);
 }
 
 #| Disables crossfading between songs.
@@ -46,12 +41,7 @@ multi sub mpd-crossfade (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	$socket
-		==> mpd-send("crossfade " ~ $seconds)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("crossfade", $seconds, $socket);
 }
 
 #| Unsets the threshold at which songs will be overlapped. Like crossfading but
@@ -80,12 +70,7 @@ multi sub mpd-mixrampdb (
 		MPD::Client::Exceptions::ArgumentException.new("Decibel value must be negative").throw;
 	}
 
-	$socket
-		==> mpd-send("mixrampdb " ~ $decibels)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("mixrampdb", $decibels, $socket);
 }
 
 #| Removes the mixramp delay, making it fall back to crossfading.
@@ -102,12 +87,7 @@ multi sub mpd-mixrampdelay (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	$socket
-		==> mpd-send("mixrampdelay " ~ $seconds)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("mixrampdelay", $seconds, $socket);
 }
 
 #| Toggle the random state.
@@ -159,12 +139,7 @@ sub mpd-setvol (
 		MPD::Client::Exceptions::ArgumentException.new("Volume cannot exceed 100").throw;
 	}
 
-	$socket
-		==> mpd-send("setvol " ~ $volume)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("setvol", $volume, $socket);
 }
 
 #| Toggle single state. When single is activated, playback is stopped after
@@ -207,12 +182,7 @@ sub mpd-replay-gain-mode (
 		MPD::Client::Exceptions::ArgumentException.new("Mode '$mode' is illegal for replay_gain_mode").throw;
 	}
 
-	$socket
-		==> mpd-send("replay_gain_mode " ~ $mode)
-		==> mpd-response-ok()
-		;
-
-	$socket;
+	mpd-send("replay_gain_mode", $mode, $socket);
 }
 
 #| Retrieve replay gain options. Currently, only the variable replay_gain_mode
