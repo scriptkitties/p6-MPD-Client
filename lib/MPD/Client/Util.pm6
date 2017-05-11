@@ -6,32 +6,6 @@ use MPD::Client::Exceptions::SocketException;
 
 unit module MPD::Client::Util;
 
-#| Send a raw command to the MPD socket.
-sub mpd-send-raw (
-	Str $message,
-	IO::Socket::INET $socket
-	--> IO::Socket::INET
-) is export {
-	$socket.put($message);
-	$socket;
-}
-
-sub mpd-send-bool (
-	Str $option,
-	Bool $state,
-	IO::Socket::INET $socket
-	--> IO::Socket::INET
-) is export {
-	my $message = $option ~ " " ~ ($state ?? "1" !! "0");
-
-	$socket
-		==> mpd-send-raw($message)
-		==> mpd-response-ok()
-		;
-
-	$socket;
-}
-
 #| Check wether the latest response on the MPD socket is OK.
 sub mpd-response-ok (
 	IO::Socket::INET $socket
@@ -60,8 +34,36 @@ sub mpd-response-hash (
 	%response;
 }
 
-#| transform 1/0 bools into Perl Bools
-sub convert-bools (
+#| Send a boolean value $state for the given $option to the MPD $socket.
+sub mpd-send-bool (
+	Str $option,
+	Bool $state,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	my $message = $option ~ " " ~ ($state ?? "1" !! "0");
+
+	$socket
+		==> mpd-send-raw($message)
+		==> mpd-response-ok()
+		;
+
+	$socket;
+}
+
+#| Send a raw command to the MPD socket.
+sub mpd-send-raw (
+	Str $message,
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	$socket.put($message);
+	$socket;
+}
+
+#| Transform a hashed response from MPD to have all @bools be native perl Bool
+#| objects.
+sub transform-response-bools (
 	@bools,
 	%input
 	--> Hash
@@ -81,7 +83,9 @@ sub convert-bools (
 	%response;
 }
 
-sub convert-ints (
+#| Transform a hashed response from MPD to have all @ints be native perl Int
+#| objects.
+sub transform-response-ints (
 	@ints,
 	%input
 	--> Hash
@@ -101,7 +105,9 @@ sub convert-ints (
 	%response;
 }
 
-sub convert-reals (
+#| Transform a hashed response from MPD to have all @reals be native perl Real
+#| objects.
+sub transform-response-reals (
 	@reals,
 	%input
 	--> Hash
@@ -121,7 +127,9 @@ sub convert-reals (
 	%response;
 }
 
-sub convert-strings (
+#| Transform a hashed response from MPD to have all @strings be native perl Str
+#| objects.
+sub transform-response-strings (
 	@strings,
 	%input
 	--> Hash
@@ -130,7 +138,7 @@ sub convert-strings (
 
 	for @strings -> $string {
 		if (!defined(%response{$string})) {
-			%response{$string} = 0.0;
+			%response{$string} = "";
 
 			next;
 		}

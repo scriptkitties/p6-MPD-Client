@@ -145,10 +145,10 @@ multi sub mpd-status (
 	$socket
 		==> mpd-send-raw("status")
 		==> mpd-response-hash()
-		==> convert-bools(@bools)
-		==> convert-reals(@reals)
-		==> convert-ints(@ints)
-		==> convert-strings(@strings)
+		==> transform-response-bools(@bools)
+		==> transform-response-reals(@reals)
+		==> transform-response-ints(@ints)
+		==> transform-response-strings(@strings)
 		;
 }
 
@@ -191,6 +191,6 @@ sub mpd-stats (
 	$socket
 		==> mpd-send-raw("stats")
 		==> mpd-response-hash()
-		==> convert-ints(@ints)
+		==> transform-response-ints(@ints)
 		;
 }
