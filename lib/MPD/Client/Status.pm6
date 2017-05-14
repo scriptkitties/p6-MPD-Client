@@ -11,9 +11,9 @@ unit module MPD::Client::Status;
 #| command that starts playback).
 sub mpd-clearerror (
 	IO::Socket::INET $socket,
-	--> IO::Socket::INET
+	--> Bool
 ) is export {
-	mpd-send("clearerror", $socket);
+	mpd-response-ok(mpd-send("clearerror", $socket));
 }
 
 #| Displays the song info of the current song (same song that is identified in
@@ -22,10 +22,7 @@ sub mpd-currentsong (
 	IO::Socket::INET $socket,
 	--> Hash
 ) is export {
-	$socket
-		==> mpd-send-raw("currentsong")
-		==> mpd-response-hash()
-		;
+	mpd-send("currentsong", $socket);
 }
 
 #| Waits until there is a noteworthy change in one or more of MPD's subsystems.
@@ -74,10 +71,7 @@ multi sub mpd-idle (
 		$message ~= " " ~ $subsystems;
 	}
 
-	$socket
-		==> mpd-send-raw($message)
-		==> mpd-response-hash()
-		;
+	mpd-send($message, $socket);
 }
 
 #| Reports the current status of the player and the volume level.
@@ -138,8 +132,7 @@ multi sub mpd-status (
 	];
 
 	$socket
-		==> mpd-send-raw("status")
-		==> mpd-response-hash()
+		==> mpd-send("status")
 		==> transform-response-bools(@bools)
 		==> transform-response-reals(@reals)
 		==> transform-response-ints(@ints)
@@ -184,8 +177,7 @@ sub mpd-stats (
 	];
 
 	$socket
-		==> mpd-send-raw("stats")
-		==> mpd-response-hash()
+		==> mpd-send("stats")
 		==> transform-response-ints(@ints)
 		;
 }

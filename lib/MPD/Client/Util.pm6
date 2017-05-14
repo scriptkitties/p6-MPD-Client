@@ -6,16 +6,8 @@ use MPD::Client::Exceptions::SocketException;
 
 unit module MPD::Client::Util;
 
-#| Check wether the latest response on the MPD socket is OK.
-sub mpd-response-ok (
-	IO::Socket::INET $socket
-	--> Bool
-) is export {
-	($socket.get() eq "OK");
-}
-
-#| Turn the latest MPD response into a Hash object.
-sub mpd-response-hash (
+#| Turn the latest MPD response as a Hash
+sub mpd-response (
 	IO::Socket::INET $socket
 	--> Hash
 ) is export {
@@ -34,12 +26,25 @@ sub mpd-response-hash (
 	%response;
 }
 
+#| Check wether the latest response on the MPD socket is OK.
+sub mpd-response-ok (
+	%response
+	--> Bool
+) is export {
+	%response
+		==> transform-response-strings(["error"])
+		==> my %transformed-response
+		;
+
+	%transformed-response<error> eq "";
+}
+
 #| Send a boolean value $state for the given $option to the MPD $socket.
 multi sub mpd-send (
 	Str $option,
 	Bool $state,
 	IO::Socket::INET $socket
-	--> IO::Socket::INET
+	--> Hash
 ) is export {
 	mpd-send($option, $state ?? "1" !! "0", $socket);
 }
@@ -49,7 +54,7 @@ multi sub mpd-send (
 	Str $option,
 	Array @values,
 	IO::Socket::INET $socket
-	--> IO::Socket::INET
+	--> Hash
 ) is export {
 	mpd-send($option, @values.join(" "), $socket);
 }
@@ -59,7 +64,7 @@ multi sub mpd-send (
 	Str $option,
 	Any $value,
 	IO::Socket::INET $socket
-	--> IO::Socket::INET
+	--> Hash
 ) is export {
 	mpd-send($option ~ " " ~ $value.Str, $socket);
 }
@@ -67,14 +72,12 @@ multi sub mpd-send (
 multi sub mpd-send (
 	Str $message,
 	IO::Socket::INET $socket
-	--> IO::Socket::INET
+	--> Hash
 ) is export {
 	$socket
 		==> mpd-send-raw($message)
-		==> mpd-response-ok()
+		==> mpd-response()
 		;
-
-	$socket;
 }
 
 #| Send a raw command to the MPD socket.

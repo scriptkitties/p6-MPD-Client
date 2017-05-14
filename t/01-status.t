@@ -4,7 +4,7 @@ use v6.c;
 use lib "lib";
 use Test;
 
-plan 2;
+plan 3;
 
 use MPD::Client;
 use MPD::Client::Status;
@@ -14,28 +14,24 @@ my $conn = mpd-connect(host => "localhost");
 subtest "Ensure all the available fields are returned by mpd-status" => {
 	my %response = mpd-status($conn);
 	my @keys = [
-		"volume",
-		"repeat",
-		"random",
-		"single",
 		"consume",
-		"playlist",
-		"playlistlength",
-		"state",
-		"song",
-		"songid",
-		"nextsong",
-		"nextsongid",
-		"time",
-		"elapsed",
 		"duration",
-		"bitrate",
-		"xfade",
+		"error",
 		"mixrampdb",
 		"mixrampdelay",
-		"audio",
+		"nextsong",
+		"nextsongid",
+		"playlist",
+		"playlistlength",
+		"random",
+		"repeat",
+		"single",
+		"song",
+		"songid",
+		"state",
 		"updating_db",
-		"error",
+		"volume",
+		"xfade",
 	];
 
 	plan (@keys.end + 1);
@@ -48,13 +44,13 @@ subtest "Ensure all the available fields are returned by mpd-status" => {
 subtest "Ensure all the available fields are returned by mpd-stats" => {
 	my %response = mpd-stats($conn);
 	my @keys = [
-		"artists",
 		"albums",
-		"songs",
-		"uptime",
+		"artists",
 		"db_playtime",
 		"db_update",
 		"playtime",
+		"songs",
+		"uptime",
 	];
 
 	plan (@keys.end + 1);
@@ -63,3 +59,5 @@ subtest "Ensure all the available fields are returned by mpd-stats" => {
 		ok %response{$key}:exists, "$key exists";
 	}
 }
+
+ok mpd-clearerror($conn), "Errors get cleared correctly";

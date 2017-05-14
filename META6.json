@@ -15,7 +15,7 @@
         "MPD::Client::Current": "lib/MPD/Client/Current.pm6",
         "MPD::Client::Playback": "lib/MPD/Client/Playback.pm6",
         "MPD::Client::Status": "lib/MPD/Client/Status.pm6",
-        "MPD::Client::Util": "lib/MPD/Client/Util.pm6",
+        "MPD::Client::Util": "lib/MPD/Client/Util.pm6"
     },
     "authors": [
         "Patrick Spek <p.spek@tyil.work>"
