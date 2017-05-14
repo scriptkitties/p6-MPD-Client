@@ -8,7 +8,7 @@ use MPD::Client::Grammars::ResponseLine;
 
 unit module MPD::Client::Util;
 
-#| Turn the latest MPD response as a Hash
+#| Get the latest MPD response as a Hash.
 sub mpd-response (
 	IO::Socket::INET $socket
 	--> Hash
