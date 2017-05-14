@@ -23,39 +23,7 @@ sub mpd-response (
 		}
 	}
 
-	my @bools = [
-		"consume",
-		"random",
-		"repeat",
-		"single",
-	];
-	my @ints = [
-		"duration",
-		"mixrampdelay",
-		"nextsong",
-		"nextsongid",
-		"playlist",
-		"playlistlength",
-		"song",
-		"songid",
-		"volume",
-		"updating_db",
-		"xfade",
-	];
-	my @reals = [
-		"mixrampdb",
-	];
-	my @strings = [
-		"error",
-		"state",
-	];
-
-	%response
-		==> transform-response-bools(@bools)
-		==> transform-response-reals(@reals)
-		==> transform-response-ints(@ints)
-		==> transform-response-strings(@strings)
-		;
+	%response;
 }
 
 #| Check wether the latest response on the MPD socket is OK.
@@ -63,7 +31,12 @@ sub mpd-response-ok (
 	%response
 	--> Bool
 ) is export {
-	%response<error> eq ""
+	%response
+		==> transform-response-strings(["error"])
+		==> my %transformed-response
+		;
+
+	%transformed-response<error> eq "";
 }
 
 #| Send a boolean value $state for the given $option to the MPD $socket.
