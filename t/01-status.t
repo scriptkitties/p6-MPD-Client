@@ -59,3 +59,5 @@ subtest "Ensure all the available fields are returned by mpd-stats" => {
 		ok %response{$key}:exists, "$key exists";
 	}
 }
+
+ok mpd-clearerror($conn), "Errors get cleared correctly";
