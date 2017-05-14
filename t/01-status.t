@@ -4,7 +4,7 @@ use v6.c;
 use lib "lib";
 use Test;
 
-plan 2;
+plan 3;
 
 use MPD::Client;
 use MPD::Client::Status;
