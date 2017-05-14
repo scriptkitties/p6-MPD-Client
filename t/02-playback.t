@@ -14,39 +14,37 @@ use MPD::Client::Exceptions::ArgumentException;
 my $conn = mpd-connect(host => "localhost");
 
 subtest "consume" => {
-	plan 2;
+	plan 4;
 
-	mpd-consume(True, $conn);
+	ok mpd-consume(True, $conn), "Consume state set without error";
 	is mpd-status("consume", $conn), True, "Consume state is set";
 
-	mpd-consume(False, $conn);
+	ok mpd-consume( $conn), "Consume state toggled without error";
 	is mpd-status("consume", $conn), False, "Consume state is not set";
 }
 
 subtest "crossfade" => {
-	plan 3;
+	plan 4;
 
-	isa-ok mpd-crossfade($conn), "IO::Socket::INET", "crossfade returns the socket";
-
-	mpd-crossfade(10, $conn);
+	ok mpd-crossfade(10, $conn), "Crossfade state set without error";
 	is mpd-status("xfade", $conn), 10, "Check wether crossfade is applied properly";
 
-	mpd-crossfade($conn);
+	ok mpd-crossfade($conn), "Crossfade state toggled without error";
 	is mpd-status("xfade", $conn), 0, "Check wether crossfade has been removed";
 }
 
 subtest "mixrampdb" => {
-	plan 4;
-
-	mpd-mixrampdb(-17, $conn);
-	is mpd-status("mixrampdb", $conn), -17, "Check wether mixrampdb is applied properly";
-
-	mpd-mixrampdb(-17.7, $conn);
-	is-approx mpd-status("mixrampdb", $conn), -17.7, "Check wether mixrampdb is applied properly with a Rat";
+	plan 7;
 
 	throws-like { mpd-mixrampdb(17, $conn) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException on positive decibel value";
 
-	mpd-mixrampdb($conn);
+	ok mpd-mixrampdb(-17, $conn);
+	is mpd-status("mixrampdb", $conn), -17, "Check wether mixrampdb is applied properly";
+
+	ok mpd-mixrampdb(-17.7, $conn);
+	is-approx mpd-status("mixrampdb", $conn), -17.7, "Check wether mixrampdb is applied properly with a Rat";
+
+	ok mpd-mixrampdb($conn);
 	is mpd-status("mixrampdb", $conn), 0, "Check wether mixrampdb has been removed";
 }
 
