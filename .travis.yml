@@ -4,7 +4,6 @@ perl6:
   - nom
   - latest
   - "2017.04"
-  - "2017.03"
 
 os:
   - linux
