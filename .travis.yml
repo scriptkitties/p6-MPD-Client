@@ -11,7 +11,7 @@ os:
 
 install:
   - chmod +x ./.travis.d/mpd.sh
-  - ./.travis.d/mpd.sh
+  - sudo ./.travis.d/mpd.sh
   - rakudobrew build zef
   - zef install --depsonly .
 
