@@ -18,7 +18,8 @@
         "MPD::Client::Util": "lib/MPD/Client/Util.pm6"
     },
     "authors": [
-        "Patrick Spek <p.spek@tyil.work>"
+        "Patrick Spek <p.spek@tyil.work>",
+        "Samantha McVey <samantham@posteo.net>"
     ],
     "tags": [
         "mpd",

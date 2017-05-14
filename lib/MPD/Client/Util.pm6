@@ -3,6 +3,8 @@
 use v6.c;
 
 use MPD::Client::Exceptions::SocketException;
+use MPD::Client::Grammars::AckLine;
+use MPD::Client::Grammars::ResponseLine;
 
 unit module MPD::Client::Util;
 
@@ -14,12 +16,19 @@ sub mpd-response (
 	my %response;
 
 	for $socket.lines() -> $line {
-		if $line eq "OK" {
+		if ($line eq "OK") {
 			last;
 		}
 
-		if ($line ~~ m/(.+)\:\s+(.*)/) {
-			%response{$0} = $1;
+		my $match;
+
+		if ($match = MPD::Client::Grammars::AckLine.parse($line)) {
+			%response<error> = $match<message>;
+			last;
+		}
+
+		if ($match = MPD::Client::Grammars::ResponseLine.parse($line)) {
+			%response{$match<key>} = $match<value>;
 		}
 	}
 
