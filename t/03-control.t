@@ -24,6 +24,13 @@ subtest "pause" => {
 
 subtest "play" => {
 	# todo: Add tests for mpd-play
+	# The following 4 keys should be tested for existance in the mpd-status
+	# call. These should be set when music is playing.
+	# "audio",
+	# "time",
+	# "elapsed",
+	# "bitrate",
+
 	done-testing;
 }
 
