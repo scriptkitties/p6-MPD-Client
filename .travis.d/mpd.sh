@@ -1,9 +1,10 @@
 #! /usr/bin/env sh
 
+readonly BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly MUSICDIR=/var/media/music
 
 # install all required packages
-apt install -y \
+apt-get install -y \
 	mpc \
 	mpd
 
@@ -13,7 +14,7 @@ mkdir -p \
 	${MUSICDIR}
 
 # configure mpd
-install ./mpd.conf /etc/mpd.conf
+install "${BASEDIR}/mpd.conf" /etc/mpd.conf
 
 # start the service
 service mpd start
