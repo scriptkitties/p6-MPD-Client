@@ -89,17 +89,21 @@ subtest "repeat" => {
 subtest "setvol" => {
 	plan 5;
 
-	mpd-setvol(0, $conn);
-	is mpd-status("volume", $conn), 0, "Set volume to 0";
-
-	mpd-setvol(100, $conn);
-	is mpd-status("volume", $conn), 100, "Set volume to 100";
-
-	mpd-setvol(42, $conn);
-	is mpd-status("volume", $conn), 42, "Set volume to 42";
-
 	throws-like { mpd-setvol(-1, $conn) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException when negative";
 	throws-like { mpd-setvol(101, $conn) }, MPD::Client::Exceptions::ArgumentException, "Throws ArgumentException when above 100";
+
+	if (mpd-status("volume", $conn) < 0) {
+		skip-rest "volume control is not available";
+	} else {
+		mpd-setvol(0, $conn);
+		is mpd-status("volume", $conn), 0, "Set volume to 0";
+
+		mpd-setvol(100, $conn);
+		is mpd-status("volume", $conn), 100, "Set volume to 100";
+
+		mpd-setvol(42, $conn);
+		is mpd-status("volume", $conn), 42, "Set volume to 42";
+	}
 }
 
 subtest "single" => {
