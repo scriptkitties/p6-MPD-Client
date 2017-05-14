@@ -29,7 +29,7 @@ multi sub mpd-pause (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	mpd-send("pause", $state, $socket);
+	mpd-send("pause", $pause, $socket);
 }
 
 #| Begins playing the playlist at song number $songpos.
@@ -102,12 +102,12 @@ multi sub mpd-seekcur (
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
-	@prefixes = [
+	my @prefixes = [
 		"+",
 		"-",
 	];
 
-	if (@array !(cont) $prefix) {
+	if (@prefixes !(cont) $prefix) {
 		MPD::Client::Exceptions::ArgumentException.new("Prefix must be one of + or -").throw;
 	}
 
