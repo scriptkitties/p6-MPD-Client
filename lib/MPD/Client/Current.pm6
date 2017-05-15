@@ -98,7 +98,7 @@ sub mpd-playlist (
 			last;
 		}
 
-		if (my $match = MPD::Client::Grammars::PlaylistLine.parse($line)) {
+		if (my $match = MPD::Client::Grammars::CurrentPlaylistLine.parse($line)) {
 			@playlist.push($match<path>);
 		}
 	}

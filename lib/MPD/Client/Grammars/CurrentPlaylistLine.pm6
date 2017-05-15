@@ -2,7 +2,7 @@
 
 use v6.c;
 
-grammar MPD::Client::Grammars::PlaylistLine {
+grammar MPD::Client::Grammars::CurrentPlaylistLine {
 	regex TOP {
 		[
 			<index>
