@@ -21,6 +21,7 @@
         "MPD::Client::Current": "lib/MPD/Client/Current.pm6",
         "MPD::Client::Database": "lib/MPD/Client/Database.pm6",
         "MPD::Client::Mount": "lib/MPD/Client/Mount.pm6",
+        "MPD::Client::Partition": "lib/MPD/Client/Partition.pm6",
         "MPD::Client::Playback": "lib/MPD/Client/Playback.pm6",
         "MPD::Client::Status": "lib/MPD/Client/Status.pm6",
         "MPD::Client::Sticker": "lib/MPD/Client/Sticker.pm6",
