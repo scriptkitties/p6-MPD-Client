@@ -6,6 +6,7 @@ use MPD::Client::Util;
 
 unit module MPD::Client::Sticker;
 
+# TODO: Give the right response, local mpd is compiled without stickers
 sub mpd-sticker-get (
 	Str $type,
 	Str $uri,
