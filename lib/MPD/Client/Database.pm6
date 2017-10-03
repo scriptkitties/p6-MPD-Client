@@ -96,7 +96,7 @@ multi sub mpd-listall (
 	IO::Socket::INET $socket
 	--> Array
 ) is export {
-	mpd-responses(mpd-send-raw("listall", $socket));
+	parse-listall-lines(mpd-send-raw("listall", $socket));
 }
 
 multi sub mpd-listall (
@@ -104,7 +104,7 @@ multi sub mpd-listall (
 	IO::Socket::INET $socket
 	--> Array
 ) is export {
-	mpd-responses(mpd-send-raw("listall $uri", $socket));
+	parse-listall-lines(mpd-send-raw("listall $uri", $socket));
 }
 
 multi sub mpd-listallinfo (
@@ -256,4 +256,24 @@ multi sub mpd-rescan (
 	--> Bool
 ) is export {
 	mpd-response-ok(mpd-send("rescan", $uri, $socket));
+}
+
+sub parse-listall-lines (
+	IO::Socket::INET $socket
+	--> Array
+) {
+	my Hash @entries;
+
+	for $socket.lines -> $line {
+		last if $line eq "OK";
+
+		if ($line ~~ /(.+) ": " (.+)/) {
+			@entries.push(%(
+				type => $0.Str,
+				path => $1.Str
+			));
+		}
+	}
+
+	@entries;
 }
