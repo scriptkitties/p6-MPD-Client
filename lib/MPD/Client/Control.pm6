@@ -30,15 +30,26 @@ multi sub mpd-pause (
 	--> IO::Socket::INET
 ) is export {
 	mpd-send("pause", $pause, $socket);
+
+#| Begins playing at the start of the playlist.
+multi sub mpd-play (
+	IO::Socket::INET $socket
+	--> IO::Socket::INET
+) is export {
+	mpd-send("play", $socket);
+
+	$socket;
 }
 
 #| Begins playing the playlist at song number $songpos.
-sub mpd-play (
+multi sub mpd-play (
 	Int $songpos,
 	IO::Socket::INET $socket
 	--> IO::Socket::INET
 ) is export {
 	mpd-send("play", $songpos, $socket);
+
+	$socket;
 }
 
 #| Begins playing the playlist at song $songid.
