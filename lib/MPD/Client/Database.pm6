@@ -4,7 +4,7 @@ use v6.c;
 
 use MPD::Client::Util;
 
-unit module MPD::Client::Current;
+unit module MPD::Client::Database;
 
 multi sub mpd-count (
 	Str $tag,
@@ -86,10 +86,10 @@ multi sub mpd-list (
 
 multi sub mpd-list (
 	Str $type,
-	Str $group-type
+	Str $group-type,
 	IO::Socket::INET $socket
 ) is export {
-	mpd-responses(mpd-send-raw("list $type group $grouptype", $socket));
+	mpd-responses(mpd-send-raw("list $type group $group-type", $socket));
 }
 
 multi sub mpd-listall (
